@@ -1,0 +1,74 @@
+{
+  "Description": "OpenRadioss HPC FEA Workload",
+  "Metadata": {
+    "SupportedPlatforms": "win-x64",
+    "SupportedOperatingSystem": "Windows",
+    "SpecialRequirements": "This workload expects GPU drivers to be preinstalled on the stystem "
+  },
+  "Parameters": {
+    "ThreadCount": "{LogicalCoreCount}",
+    "NumberofProcess": "1",
+    "SimulationModel": ""
+  },
+  "Actions": [
+    {
+      "Type": "OpenRadiossExecuter",
+      "Parameters": {
+        "Scenario": "Running_OpenRadioss",
+        "MetricScenario": "np_1_and_nt_2",
+        "PackageName": "openradioss",
+        "VisualcppPackageName": "visual_c++_red",
+        "CommandLine1": "NEON1M11_0000.rad {ThreadCount} {NumberofProcess} no no no no no",
+        "ThreadCount": "$.Parameters.ThreadCount",
+        "SimulationModel": "$.Parameters.SimulationModel",
+        "NumberofProcess": "$.Parameters.NumberofProcess",
+        "CommandLine2": "/install /passive /norestart"
+
+      }
+    }
+  ],
+  "Dependencies": [
+    {
+      "Type": "DependencyPackageInstallation",
+      "Parameters": {
+        "Scenario": "InstallOpenRadiossPackage",
+        "BlobContainer": "packages",
+        "BlobName": "openradioss.zip",
+        "PackageName": "openradioss",
+        "Extract": true
+      }
+    },
+    {
+      "Type": "DependencyPackageInstallation",
+      "Parameters": {
+        "Scenario": "InstallwgetPackage",
+        "BlobContainer": "packages",
+        "BlobName": "wget.2.0.1.zip",
+        "PackageName": "wget",
+        "Extract": true
+      }
+    },
+    {
+      "Type": "LinuxPackageInstallation",
+      "Parameters": {
+        "Scenario": "InstallRequiredLinuxPackagesForHPL",
+        "Repositories-Apt": "ppa:ubuntu-toolchain-r/test",
+        "Packages-Apt": "build-essential, libasan6, libubsan1, gfortran, cmake, perl, python3, python-is-python3, git-lfs, openmpi-bin,libmpich-dev,libopenmpi-dev,libatlas-base-dev",
+        "Packages-Yum": "mpich-devel,openmpi-devel,atlas-devel",
+        "Packages-Dnf": "mpich-devel,openmpi-devel,atlas-devel"
+      }
+    },
+    {
+      "Type": "WgetPackageInstallation",
+      "Parameters": {
+        "Scenario": "Install_visual_C++_Redistributable",
+        "PackageName": "visual_c++_red",
+        "PackageUri": "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+        // "SubPath": "VC_redist.x64",
+        "Role": "Server"
+      }
+
+    }
+
+  ]
+}
